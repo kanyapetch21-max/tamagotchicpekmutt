@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PulsePet – Cute Minimal Tamagotchi (CPE222 FPGA Prototype)</title>
+    <!-- Google Font Nunito -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=VT323&display=swap" rel="stylesheet">
+    
+    <!-- CSS Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+    <!-- App Top Bar -->
+    <header class="app-header">
+        <div class="brand-wrap">
+            <span class="brand-logo-icon">🐾</span>
+            <h1 class="brand-title">PulsePet</h1>
+            <span class="brand-subtitle">CPE222 • NEXYS A7</span>
+        </div>
+        <div class="header-tools">
+            <button id="btn-speed-toggle" class="tool-btn btn-mode-toggle mode-normal" title="Toggle Simulation Speed">⏳ NORMAL</button>
+            <button id="btn-sound-toggle" class="tool-btn" title="Toggle Sound">🔊</button>
+            <button id="btn-dev-toggle" class="tool-btn" title="Developer Test Panel">🛠️ Dev</button>
+        </div>
+    </header>
+
+    <!-- Main Console & 640x480 VGA Monitor Frame -->
+    <main class="console-wrapper">
+        <div id="vga-viewport" class="vga-viewport">
+
+            <!-- ==========================================
+                 SCREEN 1: WELCOME SCREEN
+                 ========================================== -->
+            <div id="screen-welcome" class="game-screen screen-welcome active">
+                <div class="welcome-logo-badge">💖</div>
+                <h2 class="welcome-title">PulsePet</h2>
+                <p class="welcome-desc">A Cute Minimal Tamagotchi & Logic Rescue Game</p>
+                <div class="welcome-hero-pet" id="welcome-pet-preview">
+                    <!-- Hero SVG preview -->
+                    <svg viewBox="0 0 200 180" width="100%" height="100%">
+                        <ellipse cx="100" cy="155" rx="50" ry="10" fill="#5C5265" opacity="0.15" />
+                        <ellipse cx="80" cy="146" rx="14" ry="9" fill="#FFAEC0" stroke="#5C5265" stroke-width="2.5" />
+                        <ellipse cx="120" cy="146" rx="14" ry="9" fill="#FFAEC0" stroke="#5C5265" stroke-width="2.5" />
+                        <path d="M 60 62 C 50 35, 75 32, 80 55 Z" fill="#FFAEC0" stroke="#5C5265" stroke-width="3" />
+                        <path d="M 140 62 C 150 35, 125 32, 120 55 Z" fill="#FFAEC0" stroke="#5C5265" stroke-width="3" />
+                        <path d="M 100 50 C 135 50, 155 70, 155 100 C 155 130, 138 145, 100 145 C 62 145, 45 130, 45 100 C 45 70, 65 50, 100 50 Z" fill="#F8BBD0" stroke="#5C5265" stroke-width="3.5" />
+                        <ellipse cx="100" cy="115" rx="34" ry="24" fill="#FFF0F5" opacity="0.9" />
+                        <ellipse cx="64" cy="93" rx="8" ry="5" fill="#FF8DA1" opacity="0.75" />
+                        <ellipse cx="136" cy="93" rx="8" ry="5" fill="#FF8DA1" opacity="0.75" />
+                        <ellipse cx="78" cy="85" rx="7.5" ry="9" fill="#5C5265" />
+                        <circle cx="75" cy="81" r="3" fill="#FFFFFF" />
+                        <ellipse cx="122" cy="85" rx="7.5" ry="9" fill="#5C5265" />
+                        <circle cx="119" cy="81" r="3" fill="#FFFFFF" />
+                        <path d="M 93 92 Q 97 97 100 93 Q 103 97 107 92" stroke="#5C5265" stroke-width="3" stroke-linecap="round" fill="none" />
+                    </svg>
+                </div>
+                <button id="btn-welcome-start" class="btn-kawaii-big">START ADVENTURE ✨</button>
+                <p style="font-size: 12px; color: #8E8399; margin-top: 10px;">(คลิกปุ่มสีชมพู หรือกดปุ่ม <strong>Enter</strong> บนคีย์บอร์ด)</p>
+            </div>
+
+            <!-- ==========================================
+                 SCREEN 2: CUSTOMIZATION SCREEN
+                 ========================================== -->
+            <div id="screen-customization" class="game-screen screen-customization">
+                <div class="custom-header">
+                    <h2 class="custom-title">Customize Your PulsePet ✨</h2>
+                    <p class="welcome-desc">Choose a cute name and your favorite pastel color</p>
+                </div>
+                <div class="custom-content">
+                    <div class="custom-preview-box">
+                        <div id="preview-pet-name" class="preview-name-tag">PULSE</div>
+                        <div id="custom-pet-preview" class="custom-pet-stage">
+                            <!-- Live SVG preview matches chosen color -->
+                            <svg viewBox="0 0 200 180" width="100%" height="100%">
+                                <ellipse cx="100" cy="155" rx="50" ry="10" fill="#5C5265" opacity="0.15" />
+                                <ellipse cx="80" cy="146" rx="14" ry="9" fill="#FFAEC0" stroke="#5C5265" stroke-width="2.5" />
+                                <ellipse cx="120" cy="146" rx="14" ry="9" fill="#FFAEC0" stroke="#5C5265" stroke-width="2.5" />
+                                <path d="M 60 62 C 50 35, 75 32, 80 55 Z" fill="#FFAEC0" stroke="#5C5265" stroke-width="3" />
+                                <path d="M 140 62 C 150 35, 125 32, 120 55 Z" fill="#FFAEC0" stroke="#5C5265" stroke-width="3" />
+                                <path d="M 100 50 C 135 50, 155 70, 155 100 C 155 130, 138 145, 100 145 C 62 145, 45 130, 45 100 C 45 70, 65 50, 100 50 Z" fill="#F8BBD0" stroke="#5C5265" stroke-width="3.5" />
+                                <ellipse cx="100" cy="115" rx="34" ry="24" fill="#FFF0F5" opacity="0.9" />
+                                <ellipse cx="64" cy="93" rx="8" ry="5" fill="#FF8DA1" opacity="0.75" />
+                                <ellipse cx="136" cy="93" rx="8" ry="5" fill="#FF8DA1" opacity="0.75" />
+                                <path d="M 68 85 Q 78 74 88 85" stroke="#5C5265" stroke-width="4.5" stroke-linecap="round" fill="none" />
+                                <path d="M 112 85 Q 122 74 132 85" stroke="#5C5265" stroke-width="4.5" stroke-linecap="round" fill="none" />
+                                <path d="M 92 92 Q 100 106 108 92 Z" fill="#FF8DA1" stroke="#5C5265" stroke-width="3" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="custom-controls-box">
+                        <div class="input-group">
+                            <label for="custom-pet-name">Pet Name (Max 6 Chars)</label>
+                            <input type="text" id="custom-pet-name" class="custom-input" maxlength="6" value="PULSE" placeholder="NAME">
+                        </div>
+                        <div class="input-group">
+                            <label>Pastel Color Palette</label>
+                            <div class="color-palette-picker">
+                                <button class="color-choice-btn choice-pink selected" data-color="pink" title="Pastel Pink"></button>
+                                <button class="color-choice-btn choice-cream" data-color="cream" title="Cream"></button>
+                                <button class="color-choice-btn choice-mint" data-color="mint" title="Mint Green"></button>
+                                <button class="color-choice-btn choice-lavender" data-color="lavender" title="Lavender"></button>
+                            </div>
+                        </div>
+                        <button id="btn-custom-start" class="btn-kawaii-big" style="padding: 10px 24px; font-size: 15px;">START PLAYING 🌸</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==========================================
+                 SCREEN 3: MAIN GAMEPLAY SCREEN (TOP, CENTER, BOTTOM)
+                 ========================================== -->
+            <div id="screen-main" class="game-screen screen-main">
+                
+                <!-- TOP SECTION: Name, Age, Status Bars -->
+                <div class="main-top-section">
+                    <div class="pet-info-bar">
+                        <div class="pet-name-badge">
+                            <span>🐾</span>
+                            <span id="display-pet-name">PULSE</span>
+                        </div>
+                        <div id="display-pet-age" class="pet-age-badge">Day 1</div>
+                    </div>
+                    <div class="status-bars-group">
+                        <!-- Hunger Bar -->
+                        <div class="stat-bar-container">
+                            <div class="stat-bar-header">
+                                <span>🍙 Hunger</span>
+                                <span id="val-hunger">80%</span>
+                            </div>
+                            <div class="stat-track">
+                                <div id="bar-hunger" class="stat-fill fill-hunger" style="width: 80%;"></div>
+                            </div>
+                        </div>
+                        <!-- Happiness Bar -->
+                        <div class="stat-bar-container">
+                            <div class="stat-bar-header">
+                                <span>✨ Happiness</span>
+                                <span id="val-happiness">85%</span>
+                            </div>
+                            <div class="stat-track">
+                                <div id="bar-happiness" class="stat-fill fill-happiness" style="width: 85%;"></div>
+                            </div>
+                        </div>
+                        <!-- Health Bar -->
+                        <div class="stat-bar-container">
+                            <div class="stat-bar-header">
+                                <span>💖 Health</span>
+                                <span id="val-health">100%</span>
+                            </div>
+                            <div class="stat-track">
+                                <div id="bar-health" class="stat-fill fill-health" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CENTER SECTION: Pet, Environment, Speech Bubble -->
+                <div class="main-center-section">
+                    <!-- Decorative clouds -->
+                    <div class="room-decor-cloud-1">☁️</div>
+                    <div class="room-decor-cloud-2">☁️</div>
+
+                    <!-- Contextual Speech Bubble -->
+                    <div id="pet-speech-bubble" class="speech-bubble hidden">
+                        <span id="speech-bubble-text">Hi! Let's play together! ✨</span>
+                    </div>
+
+                    <!-- Floating FX Layer -->
+                    <div id="pet-interaction-fx" class="floating-fx-container"></div>
+
+                    <!-- Pet Character Target Area -->
+                    <div id="pet-display-area" class="pet-display-wrapper">
+                        <!-- SVG pet rendered by petAnimation.js -->
+                    </div>
+                </div>
+
+                <!-- BOTTOM SECTION: 4 Interactive Care Buttons -->
+                <div class="main-bottom-section">
+                    <button id="btn-feed" class="action-btn btn-feed" title="Feed yummy onigiri (+25 Hunger)">
+                        <span class="action-btn-icon">🍙</span>
+                        <span class="action-btn-text">Feed</span>
+                    </button>
+                    <button id="btn-play" class="action-btn btn-play" title="Play a fun game (+25 Happiness)">
+                        <span class="action-btn-icon">🎾</span>
+                        <span class="action-btn-text">Play</span>
+                    </button>
+                    <button id="btn-medicine" class="action-btn btn-med" title="Give healing medicine (+30 Health)">
+                        <span class="action-btn-icon">💊</span>
+                        <span class="action-btn-text">Medicine</span>
+                    </button>
+                    <button id="btn-sleep" class="action-btn btn-sleep" title="Sleep / Wake up pet">
+                        <span id="sleep-btn-icon" class="action-btn-icon">🌙</span>
+                        <span id="sleep-btn-text" class="action-btn-text">Sleep</span>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- ==========================================
+                 SCREEN 5: ICU EMERGENCY WARNING (STAGE 1)
+                 ========================================== -->
+            <div id="screen-icu-warning" class="game-screen screen-icu-warning">
+                <div class="icu-warn-header">
+                    <div class="warn-siren-badge">🚨</div>
+                    <h2 class="icu-warn-title">EMERGENCY WARNING!</h2>
+                    <p class="icu-warn-msg">Your pet's health is critically low (≤ 15)! Give medicine immediately!</p>
+                </div>
+
+                <div class="icu-countdown-box">
+                    <div class="countdown-label">ICU Transfer In</div>
+                    <div id="icu-countdown-display" class="countdown-digits">10.0s</div>
+                </div>
+
+                <div class="welcome-hero-pet">
+                    <!-- Distressed pet SVG -->
+                    <svg viewBox="0 0 200 180" width="100%" height="100%" class="pulsepet-svg state-critical">
+                        <ellipse cx="100" cy="155" rx="50" ry="10" fill="#5C5265" opacity="0.15" />
+                        <ellipse cx="80" cy="146" rx="14" ry="9" fill="#FFAEC0" stroke="#5C5265" stroke-width="2.5" />
+                        <ellipse cx="120" cy="146" rx="14" ry="9" fill="#FFAEC0" stroke="#5C5265" stroke-width="2.5" />
+                        <path d="M 100 50 C 135 50, 155 70, 155 100 C 155 130, 138 145, 100 145 C 62 145, 45 130, 45 100 C 45 70, 65 50, 100 50 Z" fill="#F8BBD0" stroke="#5C5265" stroke-width="3.5" />
+                        <ellipse cx="100" cy="115" rx="34" ry="24" fill="#FFF0F5" opacity="0.9" />
+                        <!-- Distressed > < eyes -->
+                        <path d="M 70 80 L 84 86 L 70 92" stroke="#5C5265" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                        <path d="M 130 80 L 116 86 L 130 92" stroke="#5C5265" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                        <path d="M 93 96 Q 96 99 100 96 Q 104 93 107 96" stroke="#5C5265" stroke-width="3" stroke-linecap="round" fill="none" />
+                        <!-- Sweat droplet -->
+                        <path d="M 145 60 C 145 60 149 67 149 71 A 4 4 0 0 1 141 71 C 141 67 145 60 145 60 Z" fill="#90CAF9" />
+                    </svg>
+                </div>
+
+                <div class="icu-warn-actions">
+                    <button class="btn-kawaii-big" onclick="window.pulseActions.medicine()">GIVE MEDICINE (SAVE PET) 💊</button>
+                </div>
+            </div>
+
+            <!-- ==========================================
+                 SCREEN 6: ICU RESCUE MINIGAME (STAGE 2)
+                 ========================================== -->
+            <div id="screen-icu-game" class="game-screen screen-icu-game">
+                <!-- ICU Header -->
+                <div class="icu-minigame-header">
+                    <div class="icu-brand">
+                        <span>🏥</span>
+                        <span>ICU RESCUE UNIT</span>
+                    </div>
+                    <div id="icu-round-indicator" class="icu-round-badge">ROUND 1 / 3</div>
+                    <div class="icu-progress-dots">
+                        <div id="round-dot-1" class="round-dot dot-active"></div>
+                        <div id="round-dot-2" class="round-dot"></div>
+                        <div id="round-dot-3" class="round-dot"></div>
+                    </div>
+                </div>
+
+                <!-- Hospital Room & Logic Puzzle -->
+                <div class="icu-minigame-middle">
+                    <!-- Bed & Pet -->
+                    <div class="icu-bed-box">
+                        <div class="icu-pet-bed-stage">
+                            <!-- Pet in bed SVG -->
+                            <svg viewBox="0 0 160 120" width="100%" height="100%">
+                                <!-- Hospital Bed Frame -->
+                                <rect x="15" y="65" width="130" height="40" rx="8" fill="#F0F4F8" stroke="#B0BEC5" stroke-width="2.5" />
+                                <rect x="10" y="50" width="12" height="60" rx="4" fill="#CFD8DC" />
+                                <rect x="138" y="58" width="12" height="52" rx="4" fill="#CFD8DC" />
+                                <!-- Fluffy Pillow -->
+                                <ellipse cx="40" cy="65" rx="20" ry="12" fill="#FFFFFF" stroke="#ECEFF1" stroke-width="2" />
+                                <!-- Pet Resting -->
+                                <g transform="translate(15, 5)">
+                                    <path d="M 60 40 C 80 40, 92 50, 92 70 C 92 85, 82 92, 60 92 C 38 92, 28 85, 28 70 C 28 50, 40 40, 60 40 Z" fill="#F8BBD0" stroke="#5C5265" stroke-width="2.5" />
+                                    <!-- Bandage on head -->
+                                    <rect x="50" y="44" width="20" height="8" rx="2" fill="#FFFFFF" stroke="#E0E0E0" transform="rotate(-10, 60, 48)" />
+                                    <line x1="57" y1="48" x2="63" y2="48" stroke="#EF5350" stroke-width="2" />
+                                    <line x1="60" y1="45" x2="60" y2="51" stroke="#EF5350" stroke-width="2" />
+                                    <!-- Closed tired eyes -->
+                                    <line x1="45" y1="62" x2="55" y2="62" stroke="#5C5265" stroke-width="2.5" stroke-linecap="round" />
+                                    <line x1="65" y1="62" x2="75" y2="62" stroke="#5C5265" stroke-width="2.5" stroke-linecap="round" />
+                                    <path d="M 58 68 Q 60 70 62 68" stroke="#5C5265" stroke-width="2" fill="none" stroke-linecap="round" />
+                                </g>
+                                <!-- Cozy Mint Blanket -->
+                                <path d="M 45 68 C 65 64, 115 64, 138 68 L 138 95 L 45 95 Z" fill="#BFE8D5" stroke="#8BC3A8" stroke-width="2.5" />
+                                <line x1="45" y1="74" x2="138" y2="74" stroke="#A8DEC4" stroke-width="2" stroke-dasharray="4 4" />
+                            </svg>
+                        </div>
+                        <div class="ecg-box">
+                            <canvas id="ecg-canvas" width="170" height="48"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Digital Logic Puzzle Display -->
+                    <div class="icu-puzzle-box">
+                        <div>
+                            <span class="puzzle-instruction">⚡ DIGITAL LOGIC CHALLENGE</span>
+                            <div id="icu-puzzle-formula" class="puzzle-formula">SW2 XOR SW5 = 1</div>
+                            <div id="icu-puzzle-hint" class="puzzle-hint">Hint: XOR is 1 when inputs are different.</div>
+                        </div>
+
+                        <div id="icu-live-eval" class="icu-live-eval">
+                            <div class="eval-row">
+                                <span class="eval-expr">(0 ⊕ 0) = 0</span>
+                                <span class="status-pending">• WAITING FOR MATCH</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nexys A7 16-Switch Emulation Rack (SW15 - SW0) -->
+                <div class="icu-switches-panel">
+                    <div id="icu-switches-grid" class="switches-grid">
+                        <!-- Populated dynamically: SW15 down to SW0 -->
+                    </div>
+                </div>
+
+                <!-- ICU Confirm Action Row -->
+                <div class="icu-action-row">
+                    <div id="icu-feedback-banner" class="icu-feedback hidden"></div>
+                    <button id="btn-icu-confirm" class="btn-icu-confirm">⚡ INJECT TREATMENT (CONFIRM)</button>
+                </div>
+            </div>
+
+            <!-- ==========================================
+                 SCREEN 7: RESCUE SUCCESS SCREEN
+                 ========================================== -->
+            <div id="screen-success" class="game-screen screen-success">
+                <div class="success-badge">🎉 💖 🌟</div>
+                <h2 class="success-title">YOU SAVED YOUR PET!</h2>
+                <p class="success-desc">All 3 logic treatment cycles were correctly solved! Health restored to 75%.</p>
+                <div class="welcome-hero-pet">
+                    <!-- Happy dancing pet SVG -->
+                    <svg viewBox="0 0 200 180" width="100%" height="100%" class="pulsepet-svg anim-jump">
+                        <ellipse cx="100" cy="155" rx="50" ry="10" fill="#5C5265" opacity="0.15" />
+                        <ellipse cx="80" cy="146" rx="14" ry="9" fill="#FFAEC0" stroke="#5C5265" stroke-width="2.5" />
+                        <ellipse cx="120" cy="146" rx="14" ry="9" fill="#FFAEC0" stroke="#5C5265" stroke-width="2.5" />
+                        <path d="M 60 62 C 50 35, 75 32, 80 55 Z" fill="#FFAEC0" stroke="#5C5265" stroke-width="3" />
+                        <path d="M 140 62 C 150 35, 125 32, 120 55 Z" fill="#FFAEC0" stroke="#5C5265" stroke-width="3" />
+                        <path d="M 100 50 C 135 50, 155 70, 155 100 C 155 130, 138 145, 100 145 C 62 145, 45 130, 45 100 C 45 70, 65 50, 100 50 Z" fill="#F8BBD0" stroke="#5C5265" stroke-width="3.5" />
+                        <ellipse cx="100" cy="115" rx="34" ry="24" fill="#FFF0F5" opacity="0.9" />
+                        <ellipse cx="64" cy="93" rx="8" ry="5" fill="#FF8DA1" opacity="0.85" />
+                        <ellipse cx="136" cy="93" rx="8" ry="5" fill="#FF8DA1" opacity="0.85" />
+                        <!-- Joyful ^ ^ eyes -->
+                        <path d="M 68 85 Q 78 74 88 85" stroke="#5C5265" stroke-width="4.5" stroke-linecap="round" fill="none" />
+                        <path d="M 112 85 Q 122 74 132 85" stroke="#5C5265" stroke-width="4.5" stroke-linecap="round" fill="none" />
+                        <path d="M 92 92 Q 100 106 108 92 Z" fill="#FF8DA1" stroke="#5C5265" stroke-width="3" />
+                    </svg>
+                </div>
+                <button id="btn-success-continue" class="btn-kawaii-big">CONTINUE PLAYING 💕</button>
+            </div>
+
+            <!-- ==========================================
+                 SCREEN 8: GENTLE GAME OVER SCREEN
+                 ========================================== -->
+            <div id="screen-gameover" class="game-screen screen-gameover">
+                <div class="gameover-badge">☁️ ✨ 👼</div>
+                <h2 class="gameover-title">Resting Peacefully</h2>
+                <div class="welcome-hero-pet">
+                    <!-- Sleeping peaceful pet with halo and wings -->
+                    <svg viewBox="0 0 200 180" width="100%" height="100%">
+                        <!-- Cloud -->
+                        <ellipse cx="100" cy="155" rx="65" ry="15" fill="#FFFFFF" opacity="0.85" />
+                        <ellipse cx="70" cy="145" rx="30" ry="14" fill="#FFFFFF" opacity="0.85" />
+                        <ellipse cx="130" cy="145" rx="35" ry="16" fill="#FFFFFF" opacity="0.85" />
+                        <!-- Halo -->
+                        <ellipse cx="100" cy="40" rx="25" ry="8" fill="none" stroke="#FFE082" stroke-width="4" opacity="0.9" />
+                        <!-- Body -->
+                        <path d="M 100 50 C 135 50, 155 70, 155 100 C 155 130, 138 145, 100 145 C 62 145, 45 130, 45 100 C 45 70, 65 50, 100 50 Z" fill="#F8BBD0" stroke="#5C5265" stroke-width="3" />
+                        <!-- Resting - - eyes -->
+                        <line x1="68" y1="86" x2="86" y2="86" stroke="#5C5265" stroke-width="3.5" stroke-linecap="round" />
+                        <line x1="114" y1="86" x2="132" y2="86" stroke="#5C5265" stroke-width="3.5" stroke-linecap="round" />
+                        <path d="M 95 95 Q 100 97 105 95" stroke="#5C5265" stroke-width="2.5" stroke-linecap="round" fill="none" />
+                    </svg>
+                </div>
+                <div id="gameover-summary" class="gameover-summary">
+                    <p>PulsePet lived a happy life!</p>
+                </div>
+                <button id="btn-gameover-restart" class="btn-kawaii-big">ADOPT A NEW PET 🌸</button>
+            </div>
+
+        </div>
+
+        <!-- ==========================================
+             NEXYS A7-100T HARDWARE PCB BOARD SIMULATION
+             ========================================== -->
+        <section class="nexys-board" id="nexys-board-section">
+            <!-- Board Silkscreen Header -->
+            <div class="board-header">
+                <div class="board-brand-group">
+                    <span class="board-logo">DIGILENT NEXYS A7-100T</span>
+                    <span class="board-chip-tag">ARTIX-7 XC7A100T • CPE222 KMUTT</span>
+                </div>
+                <button id="btn-open-manual" class="btn-manual-guide">📖 คู่มือบอร์ด Nexys A7</button>
+            </div>
+
+            <div class="board-main-grid">
+                <!-- Left Board Column: 8-Digit 7-Seg, RGB LED, Sensors -->
+                <div class="board-col-left">
+                    <!-- 8-Digit Multiplexed 7-Segment Display (AN7..AN0) -->
+                    <div class="seg8-display-box">
+                        <div class="seg-header-label">
+                            <span>8-DIGIT 7-SEGMENT DISPLAY (AN7..AN0)</span>
+                            <span id="seg-mode-tag" style="color: #F59E0B;">AGE MODE</span>
+                        </div>
+                        <div id="virtual-7seg-display" class="seg8-digits-rack">
+                            <span id="seg-digit-0" class="seg-digit-char">P</span>
+                            <span id="seg-digit-1" class="seg-digit-char">E</span>
+                            <span id="seg-digit-2" class="seg-digit-char">T</span>
+                            <span id="seg-digit-3" class="seg-digit-char">-</span>
+                            <span id="seg-digit-4" class="seg-digit-char">0</span>
+                            <span id="seg-digit-5" class="seg-digit-char">0</span>
+                            <span id="seg-digit-6" class="seg-digit-char">0</span>
+                            <span id="seg-digit-7" class="seg-digit-char">1</span>
+                        </div>
+                    </div>
+
+                    <!-- Sensor Chips Row: ADT7420, RGB LED16, ADXL362 -->
+                    <div class="board-chips-row">
+                        <!-- ADT7420 Temperature Sensor -->
+                        <div class="board-chip-card">
+                            <div class="chip-silkscreen">TMP: ADT7420 (I2C)</div>
+                            <div class="temp-row">
+                                <span id="temp-value-display" style="font-size: 11px; font-weight: 800;">24°C</span>
+                                <span id="temp-status-tag" class="badge-temp badge-normal">🌿 COZY</span>
+                            </div>
+                            <input type="range" id="temp-slider" class="temp-slider" min="15" max="40" value="24" step="1" title="เลื่อนปรับอุณหภูมิ 15-40°C">
+                        </div>
+
+                        <!-- RGB LED16 & ADXL362 Motion Status -->
+                        <div class="board-chip-card">
+                            <div class="chip-silkscreen">STATUS: RGB LED16</div>
+                            <div class="rgb-led-unit" style="margin-top: 2px;">
+                                <div id="virtual-rgb-led" class="virtual-led led-rgb-green"></div>
+                                <span id="rgb-led-label" class="rgb-led-label" style="font-size: 10px; color: #94A3B8;">NORMAL (OK)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Board Column: 5 Directional Push Buttons + Reset -->
+                <div class="board-col-right">
+                    <div class="btn-cluster-title">
+                        <span>PUSH BUTTONS (FPGA CONTROLS)</span>
+                        <span style="font-size: 8px; color: #94A3B8;">DEBOUNCED</span>
+                    </div>
+
+                    <!-- Diamond Cross Layout of 5 Buttons -->
+                    <div class="push-buttons-diamond">
+                        <!-- BTNU (Up) - M18: Play -->
+                        <button id="hw-btn-u" class="hw-btn grid-pos-u" title="[BTNU: Pin M18] Play Action (+25 Happiness)">
+                            <span class="hw-btn-label">▲ BTNU</span>
+                            <span class="hw-btn-sub">PLAY</span>
+                        </button>
+
+                        <!-- BTNL (Left) - P17: Medicine -->
+                        <button id="hw-btn-l" class="hw-btn grid-pos-l" title="[BTNL: Pin P17] Medicine Action (+30 Health / Cancel ICU)">
+                            <span class="hw-btn-label">◀ BTNL</span>
+                            <span class="hw-btn-sub">MED</span>
+                        </button>
+
+                        <!-- BTNC (Center) - N17: Confirm / Feed -->
+                        <button id="hw-btn-c" class="hw-btn hw-btn-c grid-pos-c" title="[BTNC: Pin N17] Confirm / Feed / Start Game">
+                            <span class="hw-btn-label">● BTNC</span>
+                            <span class="hw-btn-sub">FEED/OK</span>
+                        </button>
+
+                        <!-- BTNR (Right) - M17: Sleep / Wake -->
+                        <button id="hw-btn-r" class="hw-btn grid-pos-r" title="[BTNR: Pin M17] Sleep / Wake Mode Toggle">
+                            <span class="hw-btn-label">▶ BTNR</span>
+                            <span class="hw-btn-sub">SLEEP</span>
+                        </button>
+
+                        <!-- BTND (Down) - P18: Motion Shake -->
+                        <button id="hw-btn-d" class="hw-btn grid-pos-d" title="[BTND: Pin P18] Motion Shake (ADXL362 Trigger)">
+                            <span class="hw-btn-label">▼ BTND</span>
+                            <span class="hw-btn-sub">SHAKE</span>
+                        </button>
+                    </div>
+
+                    <!-- Reset Row -->
+                    <div class="reset-btn-row">
+                        <span style="font-size: 8px; color: #94A3B8;">CPU_RESETN [C12]:</span>
+                        <button id="hw-btn-reset" class="btn-cpu-reset" title="[CPU_RESETN: Pin C12] Reset Game">RESET</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 16 Slide Switches (SW15..SW0) & 16 User LEDs (LED15..LED0) -->
+            <div class="board-switches-rack">
+                <div class="board-sw-header">
+                    <span>16 USER SWITCHES (SW15..SW0) & LED INDICATORS (LED15..LED0)</span>
+                    <span style="color: #4ADE80;">ICU LOGIC INPUTS</span>
+                </div>
+                <div id="board-switches-grid" class="switches-grid">
+                    <!-- Populated dynamically: SW15 down to SW0 -->
+                </div>
+            </div>
+
+            <!-- Developer Test Panel Drawer -->
+            <div id="dev-panel-drawer" class="dev-drawer">
+                <div class="dev-title">🛠️ Developer Test Controls (Simulate Hardware States)</div>
+                <div class="dev-buttons-row">
+                    <button id="dev-hunger-0" class="btn-dev">Hunger = 0</button>
+                    <button id="dev-hunger-50" class="btn-dev">Hunger = 50</button>
+                    <button id="dev-hunger-100" class="btn-dev">Hunger = 100</button>
+                    
+                    <button id="dev-happy-0" class="btn-dev">Happy = 0</button>
+                    <button id="dev-happy-50" class="btn-dev">Happy = 50</button>
+                    <button id="dev-happy-100" class="btn-dev">Happy = 100</button>
+                </div>
+                <div class="dev-buttons-row">
+                    <button id="dev-health-10" class="btn-dev btn-dev-danger">Health = 10 (Critical)</button>
+                    <button id="dev-health-50" class="btn-dev">Health = 50</button>
+                    <button id="dev-health-100" class="btn-dev">Health = 100</button>
+                    
+                    <button id="dev-trigger-icu-warn" class="btn-dev btn-dev-danger">🚨 Trigger ICU Warning</button>
+                    <button id="dev-trigger-icu-game" class="btn-dev btn-dev-danger">🏥 Launch ICU Minigame</button>
+                    <button id="dev-reset-all" class="btn-dev">🔄 Reset All Stats</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ==========================================
+         HARDWARE MANUAL & PINOUT GUIDE MODAL
+         ========================================== -->
+    <div id="modal-hardware-guide" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title">📖 คู่มือการใช้งานบอร์ด Nexys A7-100T (PulsePet Manual)</h3>
+                <button id="btn-close-manual" class="btn-close-modal">&times;</button>
+            </div>
+
+            <div class="modal-section">
+                <h4 class="modal-section-title">🕹️ การกดปุ่มเล่นเกมบนบอร์ด (ไม่ต้องใช้คีย์บอร์ด)</h4>
+                <p style="font-size: 13px; color: #475569; margin-bottom: 8px;">
+                    คุณสามารถกดปุ่มสี่เหลี่ยมบนแผงวงจร Nexys A7 ด้านล่างหน้าจอเพื่อเล่นเกมได้อย่างสมจริง:
+                </p>
+                <table class="hw-table">
+                    <thead>
+                        <tr>
+                            <th>ปุ่มบนบอร์ด</th>
+                            <th>Pin (FPGA)</th>
+                            <th>หน้าที่ในเกม (Game Action)</th>
+                            <th>คำอธิบาย</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong style="color: #E11D48;">BTNC</strong> (Center)</td>
+                            <td><span class="badge-pin">N17</span></td>
+                            <td><strong>CONFIRM / FEED / START</strong></td>
+                            <td>ใช้กดเริ่มเกม / ให้อาหารสัตว์เลี้ยง (🍙) / กดยืนยันคำตอบใน ICU</td>
+                        </tr>
+                        <tr>
+                            <td><strong>BTNU</strong> (Up)</td>
+                            <td><span class="badge-pin">M18</span></td>
+                            <td><strong>PLAY</strong></td>
+                            <td>กดเล่นกับสัตว์เลี้ยง (+25 ความสุข 🎾)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>BTNL</strong> (Left)</td>
+                            <td><span class="badge-pin">P17</span></td>
+                            <td><strong>MEDICINE</strong></td>
+                            <td>กดให้ยารักษา (+30 เลือด 💊) / กดช่วยชีวิตฉุกเฉินตอนเตือน ICU</td>
+                        </tr>
+                        <tr>
+                            <td><strong>BTNR</strong> (Right)</td>
+                            <td><span class="badge-pin">M17</span></td>
+                            <td><strong>SLEEP / WAKE</strong></td>
+                            <td>กดสลับโหมดนอนหลับ (🌙) เพื่อฟื้นพลังชีวิต หรือกดปลุกตื่น</td>
+                        </tr>
+                        <tr>
+                            <td><strong>BTND</strong> (Down)</td>
+                            <td><span class="badge-pin">P18</span></td>
+                            <td><strong>SHAKE</strong></td>
+                            <td>จำลองการเขย่าบอร์ด (ADXL362) สัตว์เลี้ยงจะกระโดด หรือปลุกตอนหลับ</td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color: #DC2626;">RESET</strong> (Red)</td>
+                            <td><span class="badge-pin">C12</span></td>
+                            <td><strong>CPU_RESETN</strong></td>
+                            <td>ปุ่มสีแดง: กดเพื่อรีเซ็ตเกมกลับสู่สถานะเริ่มต้นใหม่ทั้งหมด</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="modal-section">
+                <h4 class="modal-section-title">⚡ การใช้งานสวิตช์ 16 ช่อง (SW15..SW0) ในห้อง ICU</h4>
+                <ul style="font-size: 13px; color: #475569; line-height: 1.6; padding-left: 20px;">
+                    <li><strong>ตำแหน่งสวิตช์:</strong> เรียงจาก <code>SW15</code> (ซ้ายสุด) ไปหา <code>SW0</code> (ขวาสุด) ตามมาตรฐานบอร์ด Nexys A7</li>
+                    <li><strong>ดันสวิตช์ขึ้น (UP):</strong> ค่าเป็น <code>1</code> (หลอดไฟ LED สีเขียวด้านบนจะสว่าง)</li>
+                    <li><strong>ดันสวิตช์ลง (DOWN):</strong> ค่าเป็น <code>0</code> (หลอดไฟ LED จะดับ)</li>
+                    <li><strong>ในห้อง ICU:</strong> อ่านโจทย์ตรรกศาสตร์ เช่น <code>SW2 XOR SW5 = 1</code> จากนั้นคลิกสลับสวิตช์ที่กำหนด แล้วกดปุ่ม <strong>BTNC</strong> เพื่อกู้ชีพสัตว์เลี้ยงให้ผ่านครบ 3 รอบ!</li>
+                </ul>
+            </div>
+
+            <div class="modal-section">
+                <h4 class="modal-section-title">💡 ไฟแสดงสถานะ RGB LED16 & จอ 7-Segment (8 หลัก)</h4>
+                <ul style="font-size: 13px; color: #475569; line-height: 1.6; padding-left: 20px;">
+                    <li><strong>RGB LED16 (พิน N15, M16, R12):</strong>
+                        <br>• สีเขียว = สัตว์เลี้ยงสุขภาพดีและมีความสุข
+                        <br>• สีเหลือง = สัตว์เลี้ยงเริ่มหิว หรืออุณหภูมิร้อนเกิน 28°C
+                        <br>• สีน้ำเงิน = อุณหภูมิหนาวเกินไป (&lt; 20°C) สัตว์เลี้ยงจะหนาวสั่น
+                        <br>• สีแดงกระพริบ = เข้าขั้นวิกฤต (ICU Emergency) พลังชีวิต ≤ 15!
+                    </li>
+                    <li><strong>7-Segment Display 8 หลัก (CA..CG, AN0..AN7):</strong>
+                        <br>• โหมดปกติ: แสดงอายุสัตว์เลี้ยง เช่น <code>PET- 0001</code>
+                        <br>• โหมดวิกฤต ICU: แสดงเวลานับถอยหลังฉุกเฉิน 10 วินาที เช่น <code>SEnd 10.0</code>
+                    </li>
+                </ul>
+            </div>
+
+            <div style="text-align: center; margin-top: 16px;">
+                <button id="btn-close-manual-bottom" class="btn-kawaii-big" style="padding: 8px 28px; font-size: 14px;">เข้าใจแล้ว เริ่มเล่นเลย! 🌸</button>
+            </div>
+        </div>
+    </div>
+    </main>
+
+    <!-- JavaScript Game Logic Modules -->
+    <script src="js/gameState.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/petStats.js"></script>
+    <script src="js/petAnimation.js"></script>
+    <script src="js/logicPuzzle.js"></script>
+    <script src="js/icuSystem.js"></script>
+    <script src="js/sensorSimulation.js"></script>
+    <script src="js/customization.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
+

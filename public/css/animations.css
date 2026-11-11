@@ -1,0 +1,294 @@
+/* ==========================================================================
+   PulsePet Animations
+   Cute Kawaii Keyframes: Breathing, Bouncing, Chewing, Shivering, Dizzy Swirls
+   ========================================================================== */
+
+/* 1. Idle Breathing (Soft squash & stretch) */
+.anim-body {
+    transform-origin: 100px 145px;
+    animation: petBreathe 3.2s infinite ease-in-out;
+}
+
+@keyframes petBreathe {
+    0%, 100% {
+        transform: scale(1, 1);
+    }
+    50% {
+        transform: scale(1.025, 0.975);
+    }
+}
+
+/* 2. Soft Ground Shadow Oscillation */
+.anim-shadow {
+    transform-origin: 100px 155px;
+    animation: shadowPulse 3.2s infinite ease-in-out;
+}
+
+@keyframes shadowPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.15;
+    }
+    50% {
+        transform: scale(1.06);
+        opacity: 0.18;
+    }
+}
+
+/* 3. Subtle Ear Wiggle */
+.anim-ears {
+    transform-origin: 100px 60px;
+    animation: earsWiggle 4.5s infinite ease-in-out;
+}
+
+@keyframes earsWiggle {
+    0%, 90%, 100% {
+        transform: rotate(0deg);
+    }
+    93% {
+        transform: rotate(2deg);
+    }
+    96% {
+        transform: rotate(-2deg);
+    }
+}
+
+/* 4. Gentle Bouncing (Idle/UI) */
+@keyframes gentleBounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+/* 5. Joyful Jump Action */
+.pulsepet-svg-wrapper.anim-jump {
+    animation: actionJump 0.8s ease-in-out;
+}
+
+@keyframes actionJump {
+    0% {
+        transform: translateY(0) scale(1, 1);
+    }
+    30% {
+        transform: translateY(-28px) scale(0.95, 1.08);
+    }
+    50% {
+        transform: translateY(-34px) scale(1.02, 0.98);
+    }
+    75% {
+        transform: translateY(0) scale(1.1, 0.9);
+    }
+    100% {
+        transform: translateY(0) scale(1, 1);
+    }
+}
+
+/* 6. Eating / Chewing Action */
+.pulsepet-svg-wrapper.anim-eat .anim-body {
+    animation: actionChew 0.3s infinite ease-in-out;
+}
+
+@keyframes actionChew {
+    0%, 100% {
+        transform: scale(1, 1);
+    }
+    50% {
+        transform: scale(1.05, 0.94);
+    }
+}
+
+/* 7. Dizzy Wobble & Head Spin */
+.pulsepet-svg-wrapper.anim-shake {
+    animation: actionDizzy 0.6s infinite linear;
+}
+
+@keyframes actionDizzy {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(6deg) translateY(-2px); }
+    50% { transform: rotate(0deg); }
+    75% { transform: rotate(-6deg) translateY(2px); }
+    100% { transform: rotate(0deg); }
+}
+
+.anim-dizzy-stars {
+    transform-origin: 100px 45px;
+    animation: spinStars 1.8s infinite linear;
+}
+
+@keyframes spinStars {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 8. Shivering Animation (Cold) */
+.pulsepet-svg-wrapper.anim-shiver,
+.pulsepet-svg-wrapper.state-critical {
+    animation: shiverVibrate 0.15s infinite linear;
+}
+
+@keyframes shiverVibrate {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(-1.5px, 0.5px); }
+    50% { transform: translate(1px, -1px); }
+    75% { transform: translate(-1px, -0.5px); }
+    100% { transform: translate(0, 0); }
+}
+
+/* 9. Floating Zzz (Sleeping) */
+.anim-zzz {
+    animation: floatZzz 2.4s infinite ease-in-out;
+}
+
+@keyframes floatZzz {
+    0% {
+        opacity: 0;
+        transform: translate(-10px, 15px) scale(0.6);
+    }
+    40% {
+        opacity: 0.9;
+    }
+    100% {
+        opacity: 0;
+        transform: translate(25px, -35px) scale(1.1);
+    }
+}
+
+/* 10. Floating Sweat Droplet */
+.anim-sweat {
+    animation: sweatDrop 1.8s infinite ease-in-out;
+}
+
+@keyframes sweatDrop {
+    0%, 100% {
+        transform: translateY(0);
+        opacity: 0.8;
+    }
+    50% {
+        transform: translateY(4px);
+        opacity: 1;
+    }
+}
+
+/* 11. Sparkles for Joy */
+.anim-sparkle {
+    animation: sparkleTwinkle 1.2s infinite ease-in-out;
+}
+
+@keyframes sparkleTwinkle {
+    0%, 100% { transform: scale(0.8); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 1; }
+}
+
+/* 12. Floating Action Particles (Food, Hearts, Meds) */
+.anim-float-feed {
+    animation: floatItemIn 1.2s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.anim-float-heart {
+    animation: floatHeartUp 1.4s forwards ease-out;
+}
+
+.anim-float-star {
+    animation: floatStarUp 1.4s 0.2s forwards ease-out;
+}
+
+.anim-float-med {
+    animation: floatMedIn 1.3s forwards ease-in-out;
+}
+
+@keyframes floatItemIn {
+    0% {
+        opacity: 0;
+        transform: translate(-120px, 40px) scale(0.4) rotate(-30deg);
+    }
+    60% {
+        opacity: 1;
+        transform: translate(-40px, -10px) scale(1.2) rotate(10deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(0px, 10px) scale(0.2) rotate(0deg);
+    }
+}
+
+@keyframes floatHeartUp {
+    0% {
+        opacity: 0;
+        transform: translate(-20px, 0) scale(0.5);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-30px, -50px) scale(1.3);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-40px, -90px) scale(1);
+    }
+}
+
+@keyframes floatStarUp {
+    0% {
+        opacity: 0;
+        transform: translate(20px, 0) scale(0.5);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(35px, -55px) scale(1.3);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(50px, -95px) scale(0.9);
+    }
+}
+
+@keyframes floatMedIn {
+    0% {
+        opacity: 0;
+        transform: translate(100px, 30px) scale(0.4) rotate(45deg);
+    }
+    60% {
+        opacity: 1;
+        transform: translate(20px, -20px) scale(1.1) rotate(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(0px, 0px) scale(0.3);
+    }
+}
+
+/* 13. Horizontal Floating Clouds */
+@keyframes floatHorizontal {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(18px); }
+}
+
+/* 14. Emergency Pink Strobe */
+@keyframes borderEmergencyStrobe {
+    0%, 100% {
+        border-color: #F06292;
+        box-shadow: 0 0 16px rgba(240, 98, 146, 0.4), inset 0 0 12px rgba(240, 98, 146, 0.2);
+    }
+    50% {
+        border-color: #FF8DA1;
+        box-shadow: 0 0 4px rgba(240, 98, 146, 0.1);
+    }
+}
+
+/* 15. LED Strobe */
+@keyframes ledStrobe {
+    0% { opacity: 1; transform: scale(1.05); }
+    100% { opacity: 0.3; transform: scale(0.95); }
+}
+
+/* 16. Pop-in Element */
+.anim-pop {
+    animation: elementPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes elementPop {
+    0% { transform: scale(0.7); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}

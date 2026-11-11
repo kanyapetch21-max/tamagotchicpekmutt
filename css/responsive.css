@@ -1,0 +1,108 @@
+/* ==========================================================================
+   PulsePet Responsive & Viewport Scaling
+   Preserves 640x480 (4:3 aspect ratio) matching Nexys A7 VGA Output
+   ========================================================================== */
+
+/* Main responsive wrapper */
+.console-wrapper {
+    max-width: 100%;
+}
+
+@media (max-width: 720px) {
+    :root {
+        --vga-width: 92vw;
+        --vga-height: calc(92vw * 0.75); /* 4:3 VGA Aspect Ratio */
+    }
+
+    body {
+        padding: 8px 4px 20px 4px;
+    }
+
+    .app-header {
+        max-width: 92vw;
+        margin-bottom: 8px;
+    }
+
+    .brand-title {
+        font-size: 20px;
+    }
+
+    .console-wrapper {
+        padding: 8px;
+        border-radius: 20px;
+    }
+
+    .hardware-rack {
+        width: 92vw;
+    }
+
+    .hardware-modules-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .pet-display-wrapper {
+        width: 160px;
+        height: 140px;
+    }
+
+    .action-btn {
+        padding: 6px 2px;
+    }
+
+    .action-btn-icon {
+        font-size: 20px;
+    }
+
+    .action-btn-text {
+        font-size: 11px;
+    }
+
+    .switches-grid {
+        gap: 2px;
+    }
+
+    .sw-body {
+        width: 18px;
+        height: 32px;
+    }
+
+    .sw-toggle-knob {
+        width: 12px;
+        height: 12px;
+    }
+
+    .sw-body.sw-down .sw-toggle-knob {
+        transform: translateY(10px);
+    }
+
+    .sw-label {
+        font-size: 7px;
+    }
+}
+
+@media (max-width: 480px) {
+    .brand-subtitle {
+        display: none;
+    }
+
+    .status-bars-group {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .icu-minigame-middle {
+        flex-direction: column;
+    }
+
+    .icu-bed-box {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    .ecg-box {
+        width: 140px;
+    }
+}
+

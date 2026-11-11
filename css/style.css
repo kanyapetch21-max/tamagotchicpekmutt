@@ -1,0 +1,1708 @@
+/* ==========================================================================
+   PulsePet - Cute Minimal Tamagotchi
+   CPE222 Digital Electronics & Logic Design (Nexys A7 Prototype)
+   Design Aesthetic: Japanese Kawaii Minimal Pastel
+   ========================================================================== */
+
+:root {
+    --bg-main: #FFF9F3;
+    --pastel-pink: #F8BBD0;
+    --pastel-pink-dark: #F06292;
+    --lavender: #DCC6F5;
+    --lavender-dark: #BA68C8;
+    --mint-green: #BFE8D5;
+    --mint-green-dark: #4DB6AC;
+    --baby-blue: #C9E8FA;
+    --baby-blue-dark: #64B5F6;
+    --cream: #FFF1D6;
+    --cream-dark: #FFD54F;
+    --text-color: #5C5265;
+    --text-light: #8E8399;
+    --card-bg: #FFFFFF;
+    --shadow-soft: 0 8px 24px rgba(92, 82, 101, 0.08);
+    --shadow-button: 0 4px 12px rgba(92, 82, 101, 0.12);
+    --border-radius-lg: 24px;
+    --border-radius-md: 16px;
+    --border-radius-sm: 10px;
+    --vga-width: 640px;
+    --vga-height: 480px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-color);
+    font-family: 'Nunito', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 16px 10px 40px 10px;
+    overflow-x: hidden;
+}
+
+/* ==========================================================================
+   APP HEADER & BANNER
+   ========================================================================== */
+.app-header {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 0 10px;
+}
+
+.brand-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.brand-logo-icon {
+    font-size: 26px;
+    display: inline-block;
+    filter: drop-shadow(0 2px 4px rgba(248, 187, 208, 0.6));
+}
+
+.brand-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text-color);
+    letter-spacing: -0.5px;
+}
+
+.brand-subtitle {
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--lavender);
+    color: #4A3E54;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-left: 6px;
+    letter-spacing: 0.5px;
+}
+
+.header-tools {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tool-btn {
+    background: white;
+    border: 2px solid #EEDBCE;
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-color);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(92, 82, 101, 0.05);
+    transition: all 0.2s ease;
+}
+
+.tool-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-button);
+}
+
+.tool-btn:active {
+    transform: translateY(1px);
+}
+
+.btn-mode-toggle.mode-fast {
+    background: #FFF3E0;
+    border-color: #FFB74D;
+    color: #E65100;
+}
+
+/* ==========================================================================
+   VGA CONSOLE BEZEL & 640x480 DISPLAY VIEWPORT
+   ========================================================================== */
+.console-wrapper {
+    background: #FFFFFF;
+    border: 4px solid #F3E5D8;
+    border-radius: 32px;
+    padding: 16px;
+    box-shadow: 0 16px 40px rgba(92, 82, 101, 0.12);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.vga-viewport {
+    width: var(--vga-width);
+    height: var(--vga-height);
+    background: linear-gradient(180deg, #FFF9F3 0%, #FFF3EB 100%);
+    border-radius: var(--border-radius-lg);
+    border: 3px solid #EEDBCE;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: inset 0 2px 8px rgba(92, 82, 101, 0.06);
+    transition: all 0.3s ease;
+}
+
+.vga-viewport.vga-emergency {
+    border-color: #FF8DA1;
+    background: linear-gradient(180deg, #FFF0F3 0%, #FFE5EB 100%);
+    animation: borderEmergencyStrobe 1.2s infinite ease-in-out;
+}
+
+.vga-viewport.viewport-night {
+    background: linear-gradient(180deg, #2B2A4C 0%, #3F3B6C 100%);
+    border-color: #5C5265;
+}
+
+.vga-viewport.viewport-night * {
+    color: #F8BBD0;
+}
+
+/* Screen Switcher (Tabs) */
+.game-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.game-screen.active {
+    display: flex;
+    opacity: 1;
+}
+
+/* ==========================================================================
+   SCREEN 1: WELCOME SCREEN
+   ========================================================================== */
+.screen-welcome {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px;
+    background: radial-gradient(circle at center, #FFF4E6 0%, #FFF9F3 70%);
+}
+
+.welcome-logo-badge {
+    font-size: 48px;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 4px 10px rgba(248, 187, 208, 0.8));
+    animation: gentleBounce 2s infinite ease-in-out;
+}
+
+.welcome-title {
+    font-size: 34px;
+    font-weight: 900;
+    color: var(--text-color);
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+}
+
+.welcome-desc {
+    font-size: 14px;
+    color: var(--text-light);
+    margin-bottom: 24px;
+}
+
+.welcome-hero-pet {
+    width: 140px;
+    height: 140px;
+    margin-bottom: 24px;
+}
+
+.btn-kawaii-big {
+    background: linear-gradient(135deg, #F8BBD0 0%, #FF8DA1 100%);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 14px 40px;
+    font-size: 18px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(255, 141, 161, 0.4);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-kawaii-big:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 12px 24px rgba(255, 141, 161, 0.5);
+}
+
+.btn-kawaii-big:active {
+    transform: translateY(1px) scale(0.98);
+}
+
+/* ==========================================================================
+   SCREEN 2: CUSTOMIZATION SCREEN
+   ========================================================================== */
+.screen-customization {
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 30px;
+}
+
+.custom-header {
+    text-align: center;
+}
+
+.custom-title {
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.custom-content {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-around;
+    gap: 20px;
+}
+
+.custom-preview-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.preview-name-tag {
+    font-size: 16px;
+    font-weight: 800;
+    background: white;
+    border: 2px solid var(--pastel-pink);
+    border-radius: 12px;
+    padding: 4px 14px;
+    margin-bottom: 8px;
+    box-shadow: var(--shadow-button);
+}
+
+.custom-pet-stage {
+    width: 170px;
+    height: 150px;
+}
+
+.custom-controls-box {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: white;
+    padding: 20px;
+    border-radius: var(--border-radius-md);
+    border: 2px solid #F3E5D8;
+    box-shadow: var(--shadow-soft);
+    width: 260px;
+}
+
+.input-group label {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--text-light);
+    display: block;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.custom-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid #EEDBCE;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text-color);
+    letter-spacing: 2px;
+    outline: none;
+    text-transform: uppercase;
+    transition: border-color 0.2s;
+}
+
+.custom-input:focus {
+    border-color: var(--pastel-pink-dark);
+}
+
+.color-palette-picker {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.color-choice-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 3px solid white;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: all 0.2s;
+}
+
+.color-choice-btn.selected {
+    transform: scale(1.15);
+    border-color: var(--text-color);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+.choice-pink { background: #F8BBD0; }
+.choice-cream { background: #FFF1D6; }
+.choice-mint { background: #BFE8D5; }
+.choice-lavender { background: #DCC6F5; }
+
+/* ==========================================================================
+   SCREEN 3: MAIN GAMEPLAY SCREEN (TOP, CENTER, BOTTOM)
+   ========================================================================== */
+.screen-main {
+    justify-content: space-between;
+    height: 100%;
+    padding: 14px 18px 12px 18px;
+}
+
+/* TOP SECTION */
+.main-top-section {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #F3E5D8;
+    border-radius: var(--border-radius-md);
+    padding: 8px 14px;
+    box-shadow: var(--shadow-soft);
+}
+
+.pet-info-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.pet-name-badge {
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pet-age-badge {
+    font-size: 12px;
+    font-weight: 700;
+    background: var(--cream);
+    padding: 2px 10px;
+    border-radius: 12px;
+    color: #6D5B45;
+}
+
+.status-bars-group {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+}
+
+.stat-bar-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.stat-bar-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--text-color);
+}
+
+.stat-track {
+    width: 100%;
+    height: 12px;
+    background: #F0E8E2;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.stat-fill {
+    height: 100%;
+    border-radius: 8px;
+    transition: width 0.4s ease-out;
+}
+
+.fill-hunger { background: linear-gradient(90deg, #FFAB91 0%, #FF7043 100%); }
+.fill-happiness { background: linear-gradient(90deg, #C9E8FA 0%, #64B5F6 100%); }
+.fill-health { background: linear-gradient(90deg, #BFE8D5 0%, #4DB6AC 100%); }
+
+/* CENTER SECTION */
+.main-center-section {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 6px 0;
+}
+
+.pet-display-wrapper {
+    width: 220px;
+    height: 200px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pulsepet-svg-wrapper {
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: relative;
+    will-change: transform;
+}
+
+.pulsepet-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+}
+
+/* Contextual Speech Bubble */
+.speech-bubble {
+    position: absolute;
+    top: 5px;
+    background: #FFFFFF;
+    border: 2px solid var(--text-color);
+    border-radius: 18px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text-color);
+    box-shadow: 0 4px 10px rgba(92, 82, 101, 0.1);
+    z-index: 20;
+    max-width: 240px;
+    text-align: center;
+}
+
+.speech-bubble:after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 8px 8px 0;
+    border-style: solid;
+    border-color: #FFFFFF transparent;
+    display: block;
+    width: 0;
+}
+
+.speech-bubble:before {
+    content: '';
+    position: absolute;
+    bottom: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 9px 9px 0;
+    border-style: solid;
+    border-color: var(--text-color) transparent;
+    display: block;
+    width: 0;
+}
+
+.speech-bubble.hidden {
+    display: none;
+}
+
+/* Floating interaction particles */
+.floating-fx-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 99;
+}
+
+.floating-fx {
+    position: absolute;
+    font-size: 34px;
+    left: 50%;
+    top: 45%;
+    z-index: 100;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.18));
+}
+
+/* Day & Night Environmental Decors */
+.decor-day {
+    display: block;
+}
+
+.decor-night {
+    display: none;
+}
+
+.room-decor-cloud-1 {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    opacity: 0.6;
+    animation: floatHorizontal 12s infinite ease-in-out;
+}
+
+.room-decor-cloud-2 {
+    position: absolute;
+    bottom: 25px;
+    right: 30px;
+    opacity: 0.5;
+    animation: floatHorizontal 16s infinite ease-in-out reverse;
+}
+
+/* Night Sky Decors */
+.room-decor-moon {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 38px;
+    filter: drop-shadow(0 0 12px #FFE082);
+    animation: gentleBounce 3s infinite ease-in-out;
+}
+
+.room-decor-star-1 {
+    position: absolute;
+    top: 25px;
+    left: 30px;
+    font-size: 22px;
+    animation: sparkleTwinkle 1.8s infinite ease-in-out;
+}
+
+.room-decor-star-2 {
+    position: absolute;
+    top: 75px;
+    right: 40px;
+    font-size: 18px;
+    animation: sparkleTwinkle 2.2s 0.4s infinite ease-in-out;
+}
+
+.room-decor-star-3 {
+    position: absolute;
+    bottom: 35px;
+    left: 40px;
+    font-size: 18px;
+    animation: sparkleTwinkle 1.6s 0.8s infinite ease-in-out;
+}
+
+/* Toggle Night Mode Styles */
+.vga-viewport.viewport-night {
+    background: linear-gradient(180deg, #18162B 0%, #2B2544 100%) !important;
+    border-color: #554A70 !important;
+}
+
+.vga-viewport.viewport-night .decor-day {
+    display: none !important;
+}
+
+.vga-viewport.viewport-night .decor-night {
+    display: block !important;
+}
+
+.vga-viewport.viewport-night .main-top-section {
+    background: rgba(22, 19, 36, 0.9) !important;
+    border-color: #473C61 !important;
+}
+
+.vga-viewport.viewport-night .pet-name-badge,
+.vga-viewport.viewport-night .stat-bar-header span {
+    color: #F8BBD0 !important;
+}
+
+.vga-viewport.viewport-night .stat-track {
+    background: #2E2745 !important;
+}
+
+/* BOTTOM SECTION (4 INTERACTIVE BUTTONS) */
+.main-bottom-section {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    width: 100%;
+}
+
+.action-btn {
+    background: #FFFFFF;
+    border: 3px solid #EEDBCE;
+    border-radius: var(--border-radius-md);
+    padding: 10px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    box-shadow: var(--shadow-button);
+    transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.action-btn:hover {
+    transform: translateY(-3px);
+    border-color: var(--pastel-pink-dark);
+    box-shadow: 0 6px 16px rgba(92, 82, 101, 0.15);
+}
+
+.action-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 4px rgba(92, 82, 101, 0.1);
+}
+
+.action-btn-icon {
+    font-size: 24px;
+}
+
+.action-btn-text {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--text-color);
+}
+
+.btn-feed { background: linear-gradient(180deg, #FFFFFF 0%, #FFF3E8 100%); }
+.btn-play { background: linear-gradient(180deg, #FFFFFF 0%, #EBF6FD 100%); }
+.btn-med { background: linear-gradient(180deg, #FFFFFF 0%, #EBFDF4 100%); }
+.btn-sleep { background: linear-gradient(180deg, #FFFFFF 0%, #F5EDFD 100%); }
+
+.btn-active-sleep {
+    background: #E8E5F7;
+    border-color: #9C8EB9;
+}
+
+/* ==========================================================================
+   SCREEN 5: ICU EMERGENCY WARNING (STAGE 1)
+   ========================================================================== */
+.screen-icu-warning {
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 30px;
+    background: radial-gradient(circle at center, #FFE8ED 0%, #FFF0F3 80%);
+}
+
+.icu-warn-header {
+    text-align: center;
+}
+
+.warn-siren-badge {
+    font-size: 32px;
+    display: inline-block;
+    animation: gentleBounce 0.8s infinite;
+}
+
+.icu-warn-title {
+    font-size: 26px;
+    font-weight: 900;
+    color: #E91E63;
+    letter-spacing: -0.5px;
+}
+
+.icu-warn-msg {
+    font-size: 14px;
+    font-weight: 700;
+    color: #880E4F;
+    margin-top: 4px;
+}
+
+.icu-countdown-box {
+    background: #FFFFFF;
+    border: 3px solid #F06292;
+    border-radius: var(--border-radius-md);
+    padding: 16px 36px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(233, 30, 99, 0.18);
+}
+
+.countdown-label {
+    font-size: 12px;
+    font-weight: 800;
+    color: #C2185B;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.countdown-digits {
+    font-size: 44px;
+    font-weight: 900;
+    color: #D81B60;
+    font-family: 'Courier New', monospace;
+}
+
+.icu-warn-actions {
+    display: flex;
+    gap: 16px;
+}
+
+/* ==========================================================================
+   SCREEN 6: ICU RESCUE MINIGAME (STAGE 2)
+   ========================================================================== */
+.screen-icu-game {
+    height: 100%;
+    padding: 10px 14px;
+    background: #FFF5F7;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.icu-minigame-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 6px 14px;
+    border-radius: var(--border-radius-sm);
+    border: 2px solid #FAD2E1;
+}
+
+.icu-brand {
+    font-size: 15px;
+    font-weight: 800;
+    color: #C2185B;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.icu-round-badge {
+    font-size: 13px;
+    font-weight: 800;
+    background: #F8BBD0;
+    color: #880E4F;
+    padding: 3px 12px;
+    border-radius: 12px;
+}
+
+.icu-progress-dots {
+    display: flex;
+    gap: 8px;
+}
+
+.round-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #F0E2E7;
+    border: 2px solid #D4A5B8;
+}
+
+.round-dot.dot-active {
+    background: #FF8DA1;
+    border-color: #E91E63;
+    animation: gentleBounce 1s infinite;
+}
+
+.round-dot.dot-cleared {
+    background: #4DB6AC;
+    border-color: #00796B;
+}
+
+/* ICU Middle Section: Hospital Room, ECG, and Logic Puzzle */
+.icu-minigame-middle {
+    display: flex;
+    gap: 12px;
+    margin: 6px 0;
+}
+
+.icu-bed-box {
+    width: 190px;
+    background: white;
+    border-radius: var(--border-radius-sm);
+    border: 2px solid #FAD2E1;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.icu-pet-bed-stage {
+    width: 130px;
+    height: 110px;
+}
+
+.ecg-box {
+    width: 100%;
+    margin-top: 6px;
+    background: #FFF5F8;
+    border-radius: 6px;
+    border: 1px solid #FAD2E1;
+    overflow: hidden;
+}
+
+#ecg-canvas {
+    width: 100%;
+    height: 48px;
+    display: block;
+}
+
+.icu-puzzle-box {
+    flex: 1;
+    background: white;
+    border: 2px solid #FAD2E1;
+    border-radius: var(--border-radius-sm);
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.puzzle-instruction {
+    font-size: 11px;
+    font-weight: 800;
+    color: #880E4F;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.puzzle-formula {
+    font-size: 19px;
+    font-weight: 900;
+    color: #2D2733;
+    font-family: 'Courier New', monospace;
+    background: #FFF0F5;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px dashed #F48FB1;
+    margin: 4px 0;
+    text-align: center;
+}
+
+.puzzle-hint {
+    font-size: 11px;
+    color: #796E82;
+    font-style: italic;
+}
+
+.icu-live-eval {
+    background: #FAF7FB;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-family: 'Courier New', monospace;
+}
+
+.status-match {
+    color: #2E7D32;
+    font-weight: 800;
+    float: right;
+}
+
+.status-pending {
+    color: #C2185B;
+    font-weight: 700;
+    float: right;
+}
+
+/* ICU Switch Rack: 16 Switches (SW15 down to SW0) */
+.icu-switches-panel {
+    background: #2B2630;
+    border-radius: var(--border-radius-sm);
+    padding: 6px 8px;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
+}
+
+.switches-grid {
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    gap: 4px;
+}
+
+.sw-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.sw-unit.sw-highlight {
+    background: rgba(255, 235, 59, 0.15);
+    border-radius: 4px;
+}
+
+.sw-led {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid #111;
+    transition: all 0.15s;
+}
+
+.sw-led.led-off {
+    background: #331111;
+    box-shadow: none;
+}
+
+.sw-led.led-on {
+    background: #00E676;
+    box-shadow: 0 0 8px #00E676;
+}
+
+.sw-body {
+    width: 22px;
+    height: 38px;
+    background: #1E1B22;
+    border: 2px solid #474150;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 3px;
+    position: relative;
+}
+
+.sw-toggle-knob {
+    width: 14px;
+    height: 14px;
+    background: linear-gradient(180deg, #E0E0E0 0%, #9E9E9E 100%);
+    border: 1px solid #424242;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    transition: transform 0.1s ease;
+}
+
+.sw-body.sw-up .sw-toggle-knob {
+    transform: translateY(0);
+    background: linear-gradient(180deg, #FFFFFF 0%, #BDBDBD 100%);
+}
+
+.sw-body.sw-down .sw-toggle-knob {
+    transform: translateY(14px);
+    background: linear-gradient(180deg, #9E9E9E 0%, #616161 100%);
+}
+
+.sw-label {
+    font-size: 9px;
+    font-weight: 800;
+    color: #B8B0C0;
+    font-family: 'Courier New', monospace;
+}
+
+.sw-val {
+    font-size: 10px;
+    font-weight: 900;
+    color: #EEDBCE;
+    font-family: 'Courier New', monospace;
+}
+
+.icu-action-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.icu-feedback {
+    font-size: 13px;
+    font-weight: 800;
+    padding: 6px 14px;
+    border-radius: 8px;
+}
+
+.icu-feedback.hidden {
+    visibility: hidden;
+}
+
+.feedback-success {
+    background: #E8F5E9;
+    color: #2E7D32;
+    border: 1px solid #A5D6A7;
+}
+
+.feedback-failure {
+    background: #FFEBEE;
+    color: #C62828;
+    border: 1px solid #EF9A9A;
+}
+
+.btn-icu-confirm {
+    background: linear-gradient(135deg, #EC407A 0%, #D81B60 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 8px 24px;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(216, 27, 96, 0.3);
+    transition: all 0.2s;
+}
+
+.btn-icu-confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(216, 27, 96, 0.4);
+}
+
+/* ==========================================================================
+   SCREEN 7: RESCUE SUCCESS
+   ========================================================================== */
+.screen-success {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px;
+    background: radial-gradient(circle at center, #E8F5E9 0%, #FFF9F3 75%);
+}
+
+.success-badge {
+    font-size: 44px;
+    margin-bottom: 8px;
+    animation: gentleBounce 1.5s infinite;
+}
+
+.success-title {
+    font-size: 30px;
+    font-weight: 900;
+    color: #2E7D32;
+    margin-bottom: 4px;
+}
+
+.success-desc {
+    font-size: 14px;
+    color: #455A64;
+    margin-bottom: 20px;
+}
+
+/* ==========================================================================
+   SCREEN 8: GAME OVER SCREEN
+   ========================================================================== */
+.screen-gameover {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px;
+    background: radial-gradient(circle at center, #F3E5F5 0%, #FFF9F3 75%);
+}
+
+.gameover-badge {
+    font-size: 40px;
+    margin-bottom: 8px;
+}
+
+.gameover-title {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--text-color);
+}
+
+.gameover-summary {
+    background: white;
+    border: 2px solid #EEDBCE;
+    border-radius: var(--border-radius-md);
+    padding: 14px 28px;
+    margin: 16px 0 24px 0;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   NEXYS A7-100T HARDWARE PCB BOARD SIMULATION (AUTHENTIC FPGA LAYOUT)
+   ========================================================================== */
+.nexys-board {
+    width: var(--vga-width);
+    margin-top: 14px;
+    background: #182026; /* Dark navy-charcoal PCB solder mask */
+    border: 4px solid #0E1418;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+    position: relative;
+    color: #E2E8F0;
+    font-family: 'Segoe UI', -apple-system, sans-serif;
+    user-select: none;
+}
+
+/* PCB Silkscreen Gold Trim & Header */
+.board-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #334155;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+}
+
+.board-brand-group {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.board-logo {
+    font-size: 15px;
+    font-weight: 900;
+    color: #F8FAFC;
+    letter-spacing: 1px;
+}
+
+.board-chip-tag {
+    font-size: 11px;
+    font-weight: 800;
+    color: #E0C27B; /* Gold silkscreen text */
+    letter-spacing: 0.5px;
+}
+
+.btn-manual-guide {
+    background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);
+    color: white;
+    border: 1px solid #60A5FA;
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4);
+    transition: all 0.2s;
+}
+
+.btn-manual-guide:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.6);
+    background: linear-gradient(135deg, #60A5FA 0%, #2563EB 100%);
+}
+
+/* PCB Middle Section: Left Display/Sensors, Right 5-Way Buttons */
+.board-main-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1.1fr;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+/* Left Board Column */
+.board-col-left {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Authentic 8-Digit Multiplexed 7-Segment Display */
+.seg8-display-box {
+    background: #0B0E11;
+    border: 2px solid #2A3642;
+    border-radius: 8px;
+    padding: 6px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.8);
+}
+
+.seg-header-label {
+    font-size: 9px;
+    font-weight: 800;
+    color: #94A3B8;
+    letter-spacing: 1px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.seg8-digits-rack {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.seg-digit-char {
+    font-family: 'Courier New', 'VT323', monospace;
+    font-size: 24px;
+    font-weight: 900;
+    color: #FF3344;
+    letter-spacing: 1px;
+    text-shadow: 0 0 8px rgba(255, 51, 68, 0.9);
+}
+
+.seg-digit-char.seg-dim {
+    color: #3A1015;
+    text-shadow: none;
+}
+
+/* Sensor Chips Row */
+.board-chips-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.board-chip-card {
+    background: #10171D;
+    border: 1px solid #2B3844;
+    border-radius: 6px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.chip-silkscreen {
+    font-size: 9px;
+    font-weight: 800;
+    color: #E0C27B; /* Gold silkscreen */
+    text-transform: uppercase;
+}
+
+/* Right Board Column: 5 Push Buttons (Cross Layout) + Reset */
+.board-col-right {
+    background: #111820;
+    border: 1px solid #2B3844;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.btn-cluster-title {
+    font-size: 10px;
+    font-weight: 800;
+    color: #E0C27B;
+    letter-spacing: 1px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 5 Push Buttons Diamond Cross Grid */
+.push-buttons-diamond {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 6px;
+    width: 170px;
+    height: 140px;
+    margin: 4px auto;
+    align-items: center;
+    justify-items: center;
+}
+
+.grid-pos-u { grid-column: 2; grid-row: 1; }
+.grid-pos-l { grid-column: 1; grid-row: 2; }
+.grid-pos-c { grid-column: 2; grid-row: 2; }
+.grid-pos-r { grid-column: 3; grid-row: 2; }
+.grid-pos-d { grid-column: 2; grid-row: 3; }
+
+/* Tactile Push Button Design */
+.hw-btn {
+    width: 48px;
+    height: 40px;
+    background: linear-gradient(180deg, #374151 0%, #1F2937 100%);
+    border: 2px solid #4B5563;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: all 0.08s ease;
+    outline: none;
+}
+
+.hw-btn:hover {
+    background: linear-gradient(180deg, #4B5563 0%, #374151 100%);
+    border-color: #60A5FA;
+}
+
+.hw-btn:active, .hw-btn.btn-pressed {
+    transform: translateY(3px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), inset 0 2px 4px rgba(0, 0, 0, 0.4);
+    border-color: #93C5FD;
+}
+
+.hw-btn-c {
+    background: linear-gradient(180deg, #F43F5E 0%, #BE123C 100%);
+    border-color: #FB7185;
+}
+
+.hw-btn-c:hover {
+    background: linear-gradient(180deg, #FB7185 0%, #E11D48 100%);
+}
+
+.hw-btn-label {
+    font-size: 8px;
+    font-weight: 900;
+    color: #FFFFFF;
+    letter-spacing: 0.5px;
+}
+
+.hw-btn-sub {
+    font-size: 7px;
+    font-weight: 700;
+    color: #D1D5DB;
+}
+
+/* Red CPU Reset Button */
+.reset-btn-row {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    border-top: 1px solid #1E293B;
+    padding-top: 6px;
+}
+
+.btn-cpu-reset {
+    background: linear-gradient(180deg, #DC2626 0%, #991B1B 100%);
+    color: white;
+    border: 1px solid #EF4444;
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 9px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+
+.btn-cpu-reset:active {
+    transform: translateY(1px);
+}
+
+/* ==========================================================================
+   16 SWITCHES & 16 LEDS RACK ON THE BOARD
+   ========================================================================== */
+.board-switches-rack {
+    background: #0B0E11;
+    border: 2px solid #2A3642;
+    border-radius: 8px;
+    padding: 8px 10px;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.8);
+}
+
+.board-sw-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    font-weight: 800;
+    color: #94A3B8;
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+}
+
+/* ==========================================================================
+   HARDWARE MANUAL MODAL POPUP
+   ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal-overlay.modal-open {
+    display: flex;
+}
+
+.modal-card {
+    background: #FFFFFF;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 680px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    position: relative;
+    border: 3px solid #E2E8F0;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #F1F5F9;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 900;
+    color: #1E293B;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-close-modal {
+    background: #F1F5F9;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+    color: #64748B;
+    transition: all 0.2s;
+}
+
+.btn-close-modal:hover {
+    background: #E2E8F0;
+    color: #0F172A;
+}
+
+.modal-section {
+    margin-bottom: 18px;
+}
+
+.modal-section-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #2563EB;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.hw-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.hw-table th, .hw-table td {
+    padding: 8px 10px;
+    border: 1px solid #E2E8F0;
+    text-align: left;
+}
+
+.hw-table th {
+    background: #F8FAFC;
+    color: #475569;
+    font-weight: 800;
+}
+
+.hw-table tr:nth-child(even) {
+    background: #F8FAFC;
+}
+
+.badge-pin {
+    font-family: 'Courier New', monospace;
+    font-weight: 800;
+    background: #E0E7FF;
+    color: #3730A3;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* Virtual RGB LED (LED16/17) */
+.rgb-led-unit {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.virtual-led {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid #444;
+    background: #222;
+    transition: all 0.2s;
+    box-shadow: inset 0 2px 4px rgba(255,255,255,0.4);
+}
+
+.led-rgb-green {
+    background: #00E676;
+    box-shadow: 0 0 12px #00E676, inset 0 2px 4px rgba(255,255,255,0.7);
+}
+
+.led-rgb-blue {
+    background: #29B6F6;
+    box-shadow: 0 0 12px #29B6F6, inset 0 2px 4px rgba(255,255,255,0.7);
+}
+
+.led-rgb-amber {
+    background: #FFA726;
+    box-shadow: 0 0 12px #FFA726, inset 0 2px 4px rgba(255,255,255,0.7);
+}
+
+.led-rgb-critical {
+    background: #FF1744;
+    box-shadow: 0 0 14px #FF1744, inset 0 2px 4px rgba(255,255,255,0.7);
+    animation: ledStrobe 0.6s infinite alternate;
+}
+
+.rgb-led-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--text-color);
+}
+
+/* Virtual 7-Segment Display (Nexys A7 Multiplexed CA..CG) */
+.seven-seg-box {
+    background: #151318;
+    border-radius: 6px;
+    padding: 4px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: 2px solid #2B2630;
+}
+
+.seven-seg-digit {
+    font-family: 'Courier New', 'VT323', monospace;
+    font-size: 24px;
+    font-weight: 900;
+    color: #FF5252;
+    letter-spacing: 2px;
+    text-shadow: 0 0 8px rgba(255, 82, 82, 0.8);
+}
+
+.seg-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #4A1A1A;
+    margin-left: -4px;
+    margin-top: 14px;
+}
+
+.seg-dot.dot-active {
+    background: #FF5252;
+    box-shadow: 0 0 6px #FF5252;
+}
+
+/* Temperature Slider (ADT7420 Simulation) */
+.temp-slider-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.temp-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.temp-slider {
+    width: 100%;
+    accent-color: #EC407A;
+    cursor: pointer;
+}
+
+.badge-temp {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 6px;
+}
+
+.badge-cold { background: #E1F5FE; color: #0288D1; }
+.badge-normal { background: #E8F5E9; color: #2E7D32; }
+.badge-hot { background: #FFF3E0; color: #E65100; }
+
+/* Motion Simulation Buttons (ADXL362) */
+.motion-buttons-group {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+.btn-shake {
+    flex: 1;
+    background: #FFFFFF;
+    border: 2px solid #EEDBCE;
+    border-radius: 10px;
+    padding: 6px 8px;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--text-color);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    transition: all 0.15s;
+}
+
+.btn-shake:hover {
+    transform: translateY(-2px);
+    border-color: var(--lavender-dark);
+}
+
+/* Developer Test Panel Drawer */
+.dev-drawer {
+    display: none;
+    background: #FFFFFF;
+    border: 2px dashed #BA68C8;
+    border-radius: var(--border-radius-sm);
+    padding: 12px;
+    margin-top: 8px;
+}
+
+.dev-drawer.dev-open {
+    display: block;
+}
+
+.dev-title {
+    font-size: 12px;
+    font-weight: 800;
+    color: #6A1B9A;
+    margin-bottom: 8px;
+}
+
+.dev-buttons-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+.btn-dev {
+    background: #F3E5F5;
+    border: 1px solid #CE93D8;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #4A148C;
+    cursor: pointer;
+}
+
+.btn-dev:hover {
+    background: #E1BEE7;
+}
+
+.btn-dev-danger {
+    background: #FFEBEE;
+    border-color: #EF9A9A;
+    color: #C62828;
+}
+
+.btn-dev-danger:hover {
+    background: #FFCDD2;
+}
+
